@@ -23,5 +23,5 @@ def B_test(significance_level, tail, r, n, p):
     
     else:
        print("H0: p =", str(p), "\nH1: p ≠", str(p))
-
-print(B_test(0.05, 'U', 15, 100, 0.12))
+       if r > n * p:
+          pass

@@ -1,29 +1,27 @@
-import MachineLib
+import MachineLib as M
 
 #Let X be the discrete random variable: 'number of birdies, or better'.
 #X ~ B(n, p), where n is the number of trials, and p is the probability of a machine achieving a birdie or better.
-def bin_P(tail, r, n, p):
-    r = int(r)
-    n = int(n)
-    p = float(p)
-
-    if tail == 'L': #P(X <= r)
-       total_probability = (1 - p) ** n 
-       for r in range (1, (r + 1)): #Sum of probabilities up to and including r
-           total_probability = total_probability + (MachineLib.nCr(n, r) * (p ** r) * (1 - p) ** (n - r))
+def B_test(significance_level, tail, r, n, p):
+    if tail == 'L':
+       print("H0: p =", str(p), "\nH1: p <", str(p))
+       test_statistic = M.bin_P(tail, r, n , p)
+       if test_statistic <= significance_level:
+          return "Reject H0, as", str(test_statistic), "≤", str(significance_level), ". Thus, there is sufficient evidence at the", str(significance_level), "significance level to accept H1, and support the claim that p <", str(p), "."
+       
+       else:
+          return "Accept H0, as", str(test_statistic), "≥", str(significance_level), ". Thus, there is insufficient evidence at the", str(significance_level), "significance level to accept H1, and support the claim that p <", str(p), "."
         
-       return MachineLib.round_xsf(total_probability, 4)
-
-    elif tail == 'M': #P(X = r)
-       if r > 0: #P(X = r), r > 0
-          return MachineLib.round_xsf((MachineLib.nCr(n,r) * (p ** r) * (1 - p) ** (n - r)), 4)
+    elif tail == 'U':
+       print("H0: p =", str(p), "\nH1: p >", str(p))
+       test_statistic = M.bin_P(tail, r, n , p)
+       if test_statistic <= significance_level:
+          return "Reject H0, as", str(test_statistic), "≤", str(significance_level), ". Thus, there is sufficient evidence at the", str(significance_level), "significance level to accept H1, and support the claim that p >", str(p), "."
        
-       else: #P(X = 0)
-          return MachineLib.round_xsf(((1 - p) ** n), 4)
+       else:
+          return "Accept H0, as", str(test_statistic), "≥", str(significance_level), ". Thus, there is insufficient evidence at the", str(significance_level), "significance level to accept H1, and support the claim that p >", str(p), "."
+    
+    else:
+       print("H0: p =", str(p), "\nH1: p ≠", str(p))
 
-    else: #P(X >= r)
-       if r > 0: #P(X >= r), r > 0
-          return MachineLib.round_xsf((1 - bin_P('L', (r - 1), n, p)), 4)
-       
-       else: #P(X >= 0)
-          return 1
+print(B_test(0.05, 'U', 15, 100, 0.12))
